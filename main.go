@@ -63,12 +63,33 @@ func createCi(w http.ResponseWriter, r *http.Request) {
 
 // Update existing CI
 func updateCi(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	for index, item := range CIs {
+		if item.ID == params["id"] {
+			CIs = append(CIs[:index], CIs[index+1:]...)
+			var ci Ci
+			_ = json.NewDecoder(r.Body).Decode(&ci)
+			ci.ID = params["id"] // generate random id
+			CIs = append(CIs, ci)
+			json.NewEncoder(w).Encode(CIs)
+			break
+		}
+	}
 
 }
 
 // Delete existing CI
 func deleteCi(w http.ResponseWriter, r *http.Request) {
-
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	for index, item := range CIs {
+		if item.ID == params["id"] {
+			CIs = append(CIs[:index], CIs[index+1:]...)
+			break
+		}
+	}
+	json.NewEncoder(w).Encode(CIs)
 }
 
 func main() {
@@ -88,8 +109,8 @@ func main() {
 	r.HandleFunc("/api/cis", getCis).Methods("GET")
 	r.HandleFunc("/api/cis/{id}", getCi).Methods("GET")
 	r.HandleFunc("/api/cis", createCi).Methods("POST")
-	r.HandleFunc("/api/cis", updateCi).Methods("PUT")
-	r.HandleFunc("/api/cis", deleteCi).Methods("DELETE")
+	r.HandleFunc("/api/cis/{id}", updateCi).Methods("PUT")
+	r.HandleFunc("/api/cis/{id}", deleteCi).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":8000", r))
 
