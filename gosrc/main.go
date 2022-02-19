@@ -22,44 +22,6 @@ type Ci struct {
 
 // Set up Datbase and open connection
 
-// Return all list of CIs in iscout db
-func getCis() []Ci {
-	// Inint CIs Array
-	var CIs []Ci
-	rows := exec_query("select * from cis")
-
-	for rows.Next() {
-		var id int
-		var t string
-		var name string
-		var created_on string
-		err := rows.Scan(&id, &t, &name, &created_on)
-		checkErr(err)
-		CIs = append(CIs, Ci{ID: id, Type: t, Name: name, Created_on: created_on})
-	}
-	return CIs
-}
-
-// Return all list of CIs in iscout db
-func getCi(ids []int) []Ci {
-	// Inint CIs Array
-	var CIs []Ci
-	ids_comma := strings.Trim(strings.Join(strings.Split(fmt.Sprint(ids), " "), ","), "[]")
-
-	rows := exec_query("SELECT * FROM CIS where ID in (" + ids_comma + ")")
-
-	for rows.Next() {
-		var id int
-		var t string
-		var name string
-		var created_on string
-		err := rows.Scan(&id, &t, &name, &created_on)
-		checkErr(err)
-		CIs = append(CIs, Ci{ID: id, Type: t, Name: name, Created_on: created_on})
-	}
-	return CIs
-}
-
 // Index handler
 func index_handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "ITScout is a discovery based CMDB")
