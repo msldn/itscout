@@ -107,6 +107,7 @@ func deleteCiHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
+	setupDB()
 	http.HandleFunc("/", index_handler)
 	http.HandleFunc("/healthz/", healthz_handler)
 

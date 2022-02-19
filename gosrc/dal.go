@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -13,11 +14,17 @@ import (
 var DB_USER = os.Getenv("DB_USER")
 var DB_PASSWORD = os.Getenv("DB_PASSWORD")
 var DB_NAME = os.Getenv("DB_NAME")
+var db *sql.DB
+var err error
 
 // Set up Datbase and open connection
 func setupDB() *sql.DB {
+
 	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", DB_USER, DB_PASSWORD, DB_NAME)
-	db, err := sql.Open("postgres", dbinfo)
+	db, err = sql.Open("postgres", dbinfo)
+	db.SetMaxOpenConns(25)
+	db.SetMaxIdleConns(25)
+	db.SetConnMaxLifetime(5 * time.Minute)
 	checkErr(err)
 	return db
 }
@@ -31,10 +38,8 @@ func checkErr(err error) {
 
 // Execute Query
 func exec_query(q string) *sql.Rows {
-	db := setupDB()
 	rows, err := db.Query(q)
 	checkErr(err)
-	db.Close()
 	return rows
 }
 
