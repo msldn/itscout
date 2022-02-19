@@ -1,4 +1,4 @@
-module itscout
+module itscout/gosrc
 
 go 1.17
 
