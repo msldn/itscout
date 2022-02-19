@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  itscout-goapp:
+    depends_on: 
+      - itscout-pg
+    build:
+      context: ./gosrc
+    container_name: itscout-app
+    hostname: itscout-app
+    networks:
+      - mynet
+    ports:
+      - 8000:8000
+    environment:
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-mysecretpassword}
+      - DB_NAME=${DB_NAME:-itscout}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_HOSTNAME=${DB_HOSTNAME:-itscout-pg}
+    deploy:
+      restart_policy:
+        condition: on-failure
+  itscout-pg:
+    build:
+      context: ./pgdb
+    container_name: itscout-pg
+    hostname: itscout-pg
+    networks:
+      - mynet
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-mysecretpassword}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+
+networks:
+  mynet:
+    driver: bridge
