@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -14,13 +15,16 @@ import (
 var DB_USER = os.Getenv("DB_USER")
 var DB_PASSWORD = os.Getenv("DB_PASSWORD")
 var DB_NAME = os.Getenv("DB_NAME")
+var DB_PORT = os.Getenv("DB_PORT")
+var DB_HOSTNAME = os.Getenv("DB_HOSTNAME")
 var db *sql.DB
-var err error
 
 // Set up Datbase and open connection
 func setupDB() *sql.DB {
 
-	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", DB_USER, DB_PASSWORD, DB_NAME)
+	port, err := strconv.Atoi(DB_PORT)
+	checkErr(err)
+	dbinfo := fmt.Sprintf("port=%d host=%s user=%s password=%s dbname=%s sslmode=disable", port, DB_HOSTNAME, DB_USER, DB_PASSWORD, DB_NAME)
 	db, err = sql.Open("postgres", dbinfo)
 	db.SetMaxOpenConns(25)
 	db.SetMaxIdleConns(25)
