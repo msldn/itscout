@@ -20,6 +20,11 @@ type Ci struct {
 	Created_on string `json: "created_on"`
 }
 
+// CI Model
+type health struct {
+	Health bool `json: "health"`
+}
+
 // Set up Datbase and open connection
 
 // Index handler
@@ -29,7 +34,8 @@ func index_handler(w http.ResponseWriter, r *http.Request) {
 
 // Health Check
 func healthz_handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "This service is health")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(health{Health: true})
 }
 
 // Error handler
@@ -108,10 +114,10 @@ func deleteCiHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	setupDB()
-	http.HandleFunc("/", index_handler)
-	http.HandleFunc("/healthz/", healthz_handler)
-
 	r := mux.NewRouter()
+
+	r.HandleFunc("/", index_handler).Methods("GET")
+	r.HandleFunc("/healthz", healthz_handler).Methods("GET")
 
 	r.HandleFunc("/api/cis", getCisHandler).Methods("GET")
 	r.HandleFunc("/api/cis/{id}", getCiHandler).Methods("GET")
