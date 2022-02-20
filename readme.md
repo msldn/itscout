@@ -28,7 +28,7 @@ While not being essential, an alternative of starting the applicaiton on k8s clu
 - `helm install itscout . `
 
 ### Uninstallation
-- `helm delete itscout . `
+- `helm delete itscout `
 
 ### Accessing the Applicaiton
 #### Get the application URL by running these commands:
