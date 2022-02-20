@@ -76,17 +76,6 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 80
 
 
-PV:
-  enabled: true
-  volumeName: postgres-data
-  localpath: postgresdata
-  claimName: postgres-data-pvc
-  storage: 10Gi
-  mountPath: /var/lib/postgresql/data
-
-pgPasswd: bXlzZWNyZXRwYXNzd29yZA==
-
-
 nodeSelector: {}
 
 tolerations: []

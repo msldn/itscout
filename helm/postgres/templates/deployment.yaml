@@ -29,13 +29,13 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
-          {{- if .Values.PV.enabled }}
           env:
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: pgsecret
+                name: {{ include "postgres.fullname" . }}
                 key: pgPasswd
+          {{- if .Values.PV.enabled }}
           volumeMounts:
           - mountPath: {{ .Values.PV.mountPath }}
             name:  {{ .Values.PV.volumeName }}
@@ -45,8 +45,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: 80
+            - name: pgsql
+              containerPort: 5432
               protocol: TCP
           livenessProbe:
             exec:
