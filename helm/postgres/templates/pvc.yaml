@@ -1,0 +1,15 @@
+{{- if .Values.PV.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.PV.claimName }}
+  annotations:
+    volume.beta.kubernetes.io/mount-options: "uid=70,gid=70,dir_mode=0700,file_mode=0700"
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.PV.storage }}
+{{- end }}
