@@ -8,12 +8,6 @@ ITScout Is configuraiton management database for storing details about configura
 ## Combatability
 While this repostiory can be extended with any kubernetes falvor, it has been specifically designed and tested to wrok with local docker desktop kubernets cluster. because of the use of local-path volumes, this is not expected to work out of the box on public cloud clusters.
 
-
-## Docker compose
-While not being essential, an alternative of starting the applicaiton on k8s cluster is to use docker compose. when started using docker-compose, application is exposed under http://localhost:8000
-- `docker-compose up --build`
-
-
 ## Runiung on kubernetes
 ### Prerequesites
 - On your workstation, make sure to have connection to k8s cluter - Docker esktop one and that you are able to execute kubectl commands.
@@ -22,6 +16,17 @@ While not being essential, an alternative of starting the applicaiton on k8s clu
 - Nginx ingress controller has to be enabled for docker desktop. this is not avaiablable by default. You may use ingresscontroller\deploy.yaml for deploying the ingress contreoller using this command 
   - `kubectl apply -f <Path_to_repo>/ingresscontroller/deploy.yaml`
 
+### Building Docker Image
+- Build both the app and the db docker images
+  - `cd gosrc`
+  - `build . -t <app_repo>:<tag>`
+  - `cd ../pgdb`
+  - `build . -t <pgdb-repo>:<tag>`
+- Make sure that you are logged in to that docker registry using 
+  - `docker login` 
+- Push the docker image to the remote docker registry
+  - `docker push <app_repo>:<tag>`
+  - `docker push <app_repo>:<tag>`
 ### Installation
 - `cd helm/itscout `
 - `helm dependency update `
@@ -29,6 +34,15 @@ While not being essential, an alternative of starting the applicaiton on k8s clu
 
 ### Uninstallation
 - `helm delete itscout `
+
+
+
+
+
+## Docker compose
+While not being essential, an alternative of starting the applicaiton on k8s cluster is to use docker compose. when started using docker-compose, application is exposed under http://localhost:8000
+- `docker-compose up --build`
+
 
 ### Accessing the Applicaiton
 #### Get the application URL by running these commands:
