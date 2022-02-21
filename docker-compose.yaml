@@ -4,6 +4,7 @@ services:
   itscout-goapp:
     depends_on: 
       - itscout-pg
+    image: msldn/itscout-app:latest
     build:
       context: ./gosrc
     container_name: itscout-app
@@ -22,6 +23,7 @@ services:
       restart_policy:
         condition: on-failure
   itscout-pg:
+    image: msldn/itscout-app:latest
     build:
       context: ./pgdb
     container_name: itscout-pg
